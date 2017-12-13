@@ -34,9 +34,12 @@ valuable information.** Here are some common issues:
 
 SELinux in some Linux distros prevents nfs-ganesha daemon
 (/usr/bin/ganesha.nfsd) to open /dev/ss0 which is required for exporting
-any GPFS file system exports. You need to disable SELinux or teach
-SELinux to allow ganesha.nfsd daemon to open the /dev/ss0 character
-special file.
+any GPFS file system exports.  SELinux also prevents ganesha daemon
+reading its own configuration files. See ganesha log for exact failure
+case.
+
+You need to disable SELinux or teach SELinux to allow ganesha.nfsd
+daemon to open the /dev/ss0 character special file.
 
 2. **Port already in use**
 
@@ -46,10 +49,8 @@ You may have another instance of ganesha daemon already running or it is
 also possible that Linux kernel NFS server is started with or without
 your knowledge!
 
-If you want to know the current process using port 2049, you could do::
-
-        lsof -i :2049
-
+"systemctl mask nfs-server" would be better way to ensure that you don't
+get linux kernel NFS server running!
 
 Issues mounting exports from NFS clients
 ========================================
@@ -71,27 +72,59 @@ goes a list of issue you may encounter:
    Linux kernel NFS server will fail to come up as it can't bind to 2049
    NFS port, but the damage has already been done.
 
-   Run "systemctl status nfs" and "systemctl status nfs-ganesha" and see
-   how and when they are started. "rpcinfo -p" gives the port numbers
-   registered with portmapper. "lsof -i :<port>" gives the current
-   process on the system using the port.
+   Run "systemctl status nfs-server" and "systemctl status nfs-ganesha"
+   and see how and when they are started. "rpcinfo -p" gives the port
+   numbers registered with portmapper. "lsof -i :<port>" or "ss -nlp |
+   grep <port>" gives the current process on the system using the port.
+   If you don't get correct process, then it could be owned by a kernel
+   thread!
 
    The best way to guard against accidental start up of Linux kernel NFS server
-   is to unmask the service.  You can also disable it but then someone could
+   is to mask the service.  You can also disable it but then someone could
    accidentally start it, so we prefer to mask the Linux kernel NFS service
-   (``systemctl mask nfs`` on Redhat based distros and ``systemctl mask
-   nfs-kernel-server`` on debian based distros) service!
+   (``systemctl mask nfs-server``).
 
-2. **NFSv3 locking failure**
+NFS client or application hang due to NLM locks
+================================================
 
-NFS client or application hangs
-===============================
+Linux NFS client and kernel NFS server use the same network lock
+manager.  nfs-ganesha has its own network lock manager. This means we
+can't have Linux NFS client with an NFSv3 mount and nfs-ganesha running
+at the same time. If you mount an NFS export with NFSv3 on the node
+running ganesha, it would take NLM port preventing ganesha servicing any
+NLM requests.
 
-Linux NFS client and kernel NFS server use the same network lock manager.
-nfs-ganesha has its own network lock manager. This means we can't have Linux
-NFS client with an NFSv3 mount and nfs-ganesha running at the same time. If you mount an NFS
-export 
+Ganesha registers only version 4 NLM for tcp and udp. So you only see two
+nlockmgr lines in "rcpinfo -p" output::
 
+ # rpcinfo -p | grep lockmgr
+    100021    4   udp  50836  nlockmgr
+    100021    4   tcp  33448  nlockmgr
+
+The Linux kernel lock manager would register NLM for versions 1, 3 and
+4.  A typical output will have 6 entries as below::
+
+ # rpcinfo -p | grep lockmgr
+    100021    1   udp  53568  nlockmgr
+    100021    3   udp  53568  nlockmgr
+    100021    4   udp  53568  nlockmgr
+    100021    1   tcp  32770  nlockmgr
+    100021    3   tcp  32770  nlockmgr
+    100021    4   tcp  32770  nlockmgr
+
+"tcpdump" trace would show all NLM requests getting rejects with the
+following as kernel NLM client would only know how to make requests
+(not reponses!)::
+
+    Message Type: Reply (1)
+    [Program: NLM (100021)]
+    [Program Version: 4]
+    [Procedure: LOCK (2)]
+    Reply State: denied (1)
+    [This is a reply to a request in frame 19]
+    [Time from request: 0.000102000 seconds]
+    Reject State: AUTH_ERROR (1)
+    Auth State: bad credential (seal broken) (1)
 
 
 Ganesha hangs 
