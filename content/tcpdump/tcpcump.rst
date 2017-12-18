@@ -21,6 +21,15 @@ isn't responding, then it is likely the server's issue. If they both
 talk to each other same thing over and over again, then it is time to
 consult the protocol to see why that is happening and whose fault it is.
 
+Since this is a hang and you want to see what is happening in its full
+glory, capturing everything at the NFS client would be ideal assuming
+that the server might be serving other NFS clients. The following
+tcpdump options while executing it from NFS client are recommented, use
+your best judgement though::
+
+    tcpdump -i <iface> -s0 -w <pcapfile-name> host <NFS-server-ip-address>
+
+
 Performance
 ===========
 
@@ -66,3 +75,40 @@ The following filter will display port 2049 (aka NFS) traffic only::
     51          0 192.168.200.11 -> 192.168.200.184 NFS 3822 V3 WRITE Call, FH: 0x424ed19f Offset: 41099276288 Len: 53248 FILE_SYNC
     59          0 192.168.102.183 -> 192.168.102.121 NFS 230 V3 FSSTAT Reply (Call In 10)
     60          0 192.168.102.121 -> 192.168.102.183 NFS 210 V3 FSSTAT Call, FH: 0x68a15344
+
+Capturing NFSv3 byte range lock traffic
+=======================================
+
+NFSv3 environments use NLM protocol. Find the NLM port number using "rcpinfo -p
+<NFS-server>" and search for nlockmgr port number. Then use the tcpdump "port
+<port>" option to capture only the NLM traffic. For example, tcp NLM port
+number is 46859 in the example below::
+
+ # rpcinfo -p vm2
+   program vers proto   port  service
+    100000    4   tcp    111  portmapper
+    100000    3   tcp    111  portmapper
+    100000    2   tcp    111  portmapper
+    100000    4   udp    111  portmapper
+    100000    3   udp    111  portmapper
+    100000    2   udp    111  portmapper
+    100024    1   udp  55665  status
+    100024    1   tcp  49741  status
+    100003    3   udp   2049  nfs
+    100003    3   tcp   2049  nfs
+    100003    4   udp   2049  nfs
+    100003    4   tcp   2049  nfs
+    100005    1   udp  60952  mountd
+    100005    1   tcp  45982  mountd
+    100005    3   udp  60952  mountd
+    100005    3   tcp  45982  mountd
+    100021    4   udp  33489  nlockmgr
+    100021    4   tcp  46859  nlockmgr
+    100011    1   udp  50620  rquotad
+    100011    1   tcp  33899  rquotad
+    100011    2   udp  50620  rquotad
+    100011    2   tcp  33899  rquotad
+
+To capture traffic going to or from port 46859, you can do::
+
+    tcpdump -i <iface> -s0 -w <pcapfile-name> "tcp port 46859 and host <NFS-server-ip-address>"
