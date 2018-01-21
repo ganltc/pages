@@ -84,6 +84,16 @@ goes a list of issue you may encounter:
    accidentally start it, so we prefer to mask the Linux kernel NFS service
    (``systemctl mask nfs-server``).
 
+2. ** Clients with multiple ip addresses **
+
+   Explain the issue here
+
+3. ** security settings **
+
+   NFV4 is affected more than NFSv3 due to NFSv4 pseudo traversal.
+   Explain with examples, submounts/export issues
+
+
 NFS client or application hang due to NLM locks
 ================================================
 
