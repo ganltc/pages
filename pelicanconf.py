@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 AUTHOR = u'malahal'
 SITENAME = u'ganltc blog'
-THEME = 'notmyidea'
+THEME = 'elegant'
 SITEURL = 'file:///home/malahal/work/src/pages/output'
 
 PATH = 'content'
