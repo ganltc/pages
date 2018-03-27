@@ -28,6 +28,8 @@ Quality and data collection
    it is an enhancement request. Ganesha core already supports it.
    **NFS CLI work**
 
+#. Preserve ENFILE or EMFILE errno's, now they show up as EIO!
+
 #. Add some more data to snap collection. We need 'systemctl status'
    output among other things. Anything else that would be helpful?
    **snap collection work**
