@@ -30,6 +30,9 @@ Quality and data collection
 
 #. Preserve ENFILE or EMFILE errno's, now they show up as EIO!
 
+#. Add rate limited printing/logging and make some of the messages rate
+   limited!
+
 #. Add some more data to snap collection. We need 'systemctl status'
    output among other things. Anything else that would be helpful?
    **snap collection work**
