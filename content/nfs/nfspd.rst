@@ -13,11 +13,11 @@ Problem Determination Guide for Spectrum Scale NFS-Ganesha
 Installation issues
 ===================
 
-nfs-ganesha probject uses libntirpc as a subproject. We currently ship
-libntirpc library code as part of the nfs-ganesha packages. Redhat ships
-libntirpc and nfs-ganesha packages separately. If you already installed
+NFS-Ganesha project uses libntirpc as a subproject. We currently ship
+libntirpc library code as part of the NFS-Ganesha packages. Redhat ships
+libntirpc and NFS-Ganesha packages separately. If you already installed
 libntirpc packages from EPEL repository, you will have same files conflicting
-from IBM supplied nfs-ganesha packages. Please remove existing libntirpc
+from IBM supplied NFS-Ganesha packages. Please remove existing libntirpc
 packages or de-activate yum/dnf repository supplying libntirpc package.
 
 Other than the above issue, there shouldn't be any issues as long as you
@@ -32,10 +32,10 @@ valuable information.** Here are some common issues:
 
 1. **SELinux**
 
-SELinux in some Linux distros prevents nfs-ganesha daemon
+SELinux in some Linux distros prevents NFS-Ganesha daemon
 (/usr/bin/ganesha.nfsd) to open /dev/ss0 which is required for exporting
-any GPFS file system exports.  SELinux also prevents ganesha daemon
-reading its own configuration files. See ganesha log for exact failure
+any GPFS file system exports.  SELinux also prevents NFS-Ganesha daemon
+reading its own configuration files! See NFS-Ganesha log for exact failure
 case.
 
 You need to disable SELinux or teach SELinux to allow ganesha.nfsd
@@ -45,7 +45,7 @@ daemon to open the /dev/ss0 character special file.
 
 Historically, all NFS servers use port 2049 for NFS protocol (it is also
 required for NFSv4). So you can't run two NFS servers at the same time.
-You may have another instance of ganesha daemon already running or it is
+You may have another instance of NFS-Ganesha daemon already running or it is
 also possible that Linux kernel NFS server is started with or without
 your knowledge!
 
@@ -55,7 +55,7 @@ get linux kernel NFS server running!
 Issues mounting exports from NFS clients
 ========================================
 
-So you have ganesha NFS server running, but unable to mount an export
+If you have NFS-Ganesha server running, but unable to mount an export
 that you think you should. **Network trace is your best friend here. Actually
 network trace is your best friend for any problem post start up!** Here
 goes a list of issue you may encounter:
@@ -67,8 +67,8 @@ goes a list of issue you may encounter:
    mountd port number on the NFS server node. NFS mount will fail if
    your server doesn't return mountd port for one reason or the other. A
    classic case is that you start Linux kernel NFS server after starting
-   nfs-ganesha server. The Linux kernel NFS server will register it own
-   mountd port overwriting nfs-ganesha mountd port.  Eventually, the
+   NFS-Ganesha server. The Linux kernel NFS server will register it own
+   mountd port overwriting NFS-Ganesha mountd port.  Eventually, the
    Linux kernel NFS server will fail to come up as it can't bind to 2049
    NFS port, but the damage has already been done.
 
@@ -84,25 +84,24 @@ goes a list of issue you may encounter:
    accidentally start it, so we prefer to mask the Linux kernel NFS service
    (``systemctl mask nfs-server``).
 
-2. ** Clients with multiple ip addresses **
 
-   Explain the issue here
+2. ** security settings **
 
-3. ** security settings **
-
-   NFV4 is affected more than NFSv3 due to NFSv4 pseudo traversal.
-   Explain with examples, submounts/export issues
+   NFV4 is affected more than NFSv3 due to NFSv4 pseudo traversal. If /A
+   is exported with 'krb5' only authentication and subdirectory /A/B is
+   exported with 'SYS' only authentication, mount of '/A/B' would fail
+   unless the NFS client tries krb5 for /A and then 'SYS' for /A/B.
 
 
 NFS client or application hang due to NLM locks
 ================================================
 
 Linux NFS client and kernel NFS server use the same network lock
-manager.  nfs-ganesha has its own network lock manager. This means we
-can't have Linux NFS client with an NFSv3 mount and nfs-ganesha running
+manager.  NFS-Ganesha has its own network lock manager. This means we
+can't have Linux NFS client with an NFSv3 mount and NFS-Ganesha running
 at the same time. If you mount an NFS export with NFSv3 on the node
-running ganesha, it would take NLM port preventing ganesha servicing any
-NLM requests.
+running NFS-Ganesha it would take NLM port preventing NFS-Ganesha
+servicing any NLM requests.
 
 Ganesha registers only version 4 NLM for tcp and udp. So you only see two
 nlockmgr lines in "rcpinfo -p" output::
@@ -139,9 +138,8 @@ following as kernel NLM client would only know how to make requests
 
 Ganesha hangs 
 =============
-
-Ganesha coredumps
-=================
-
-tcpdump
-=======
+- tcpdump should be collected to determine a possible root cause
+- tcpdump from both sides (NFS client and NFS server) would be good
+- Full packet capture should be done for hangs (-s0)
+- Use ganesha_mgr to capture NFS-Ganesha traces
+- A forced coredump might be needed to analyse the hangs
