@@ -41,7 +41,7 @@ Create source code corresponding to a given rpm version
 
    *The first 3 version numbers (2.5.3 or 2.3.2) followed by the package name
    indicate that these packages are based on the upstream NFS-Ganesha
-   version 2.5.3 and NFS-Ganesha version 2.3.2*
+   version 2.5.3 and NFS-Ganesha version 2.3.2* respectively.
 
    *The string "-ibm" to all the way to ".el7" is added by IBM packaging.
    The tag is "Vx.y.z-<ibm-added-string>"*
@@ -53,7 +53,7 @@ Create source code corresponding to a given rpm version
       V2.5.3-ibm015.03
 
 #. Check out the above tag's source code with a local branch name same as the
-   tag::
+   tag itself::
 
     git checkout -b V2.5.3-ibm015.03 V2.5.3-ibm015.03
 
