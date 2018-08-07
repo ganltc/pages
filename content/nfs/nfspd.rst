@@ -3,7 +3,7 @@ Problem Determination Guide for Spectrum Scale NFS-Ganesha
 ==========================================================
 
 :date: 2017-09-22
-:modified: 2017-12-13
+:modified: 2018-07
 :tags: nfs
 :category: nfs
 :authors: Malahal Naineni
@@ -136,10 +136,44 @@ following as kernel NLM client would only know how to make requests
     Auth State: bad credential (seal broken) (1)
 
 
+Throttling log messages
+=======================
+
+Some NFS-Ganesha threads read socket data, prepare protocol requests
+with the help of other threads, and then place the requests in request
+queues. NFS-Ganesha worker threads dequeue such requests from the
+request queues for processing. If NFS-Ganesha worker threads are slow in
+processing, the request queues get larger and larger. Instead of
+allowing more and more requests from the NFS clients, the socket reading
+threads throttle reading socket data there by throttling NFS clients
+sending NFS requests.
+
+NFS-Ganesha logs the following messages when request queue lengths hit
+the configured levels. The first message indicates the global counter
+(total requests from all sockets) reaching its limit, so all sockets are
+throttled. The second message indicates a given transport reaching its
+configured limit and throttles only the corresponding transport::
+ 
+    2016-11-01 19:48:01 : epoch 000b0042 : localhost : ganesha.nfsd-16645[disp] nfs_rpc_getreq_ng :DISP :EVENT :global outstanding reqs quota exceeded (have 5008, allowed 5000)
+
+    2017-12-21 01:55:41 : epoch 00060217 : localhost : ganesha.nfsd-12600[disp] nfs_rpc_cond_stall_xprt :DISP :EVENT :xprt 0x7f99b803a500 has 5001 reqs, marking stalled
+
+Both the above messages usually indicate a slow back end (aka any of
+GPFS, Network, or Storage).  Other reason could be a hung NFS-Ganesha
+worker threads. If periodic execution of "ganesha_stats" show increased
+number of processed operations, then it is unlikely to be an NFS-Ganesha
+hang.
+
 Ganesha hangs 
 =============
 - tcpdump should be collected to determine a possible root cause
 - tcpdump from both sides (NFS client and NFS server) would be good
+- Always use pcap format while capturing the data (use -w <filename>
+  option with tcpdump command)
 - Full packet capture should be done for hangs (-s0)
 - Use ganesha_mgr to capture NFS-Ganesha traces
-- A forced coredump might be needed to analyse the hangs
+- Enable GPFS tracing (vnode level 5)
+- A forced coredump of NFS-Ganesha daemon
+
+See `data collection for hang analysis
+<{filename}./data.collect.perf.hang.rst>`_ for more details..
