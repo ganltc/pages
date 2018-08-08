@@ -21,9 +21,10 @@ issue or a hang condition.
 
 - Collect below data periodically on every CES node. These produce
   output, so please append the data to filenames of your choice. Adding
-  a timestamp using "date" command is also preferred as given below.
-  These can be run every 5 minutes or so. This data collection should be
-  started before the problem is observed.
+  a timestamp using "date" command is also preferred as given below for
+  some commands (others have their own timestamp!).  These can be run
+  every 5 minutes or less. This data collection should be started before
+  the problem is observed.
 
   #. Extract GPFS stats and reset them for the next collection::
 
@@ -35,30 +36,44 @@ issue or a hang condition.
 
   #. Number of file descriptors opened by Ganesha server (**use the actual PID of Ganesha process**)::
 
-        date && ls /proc/<PID-of-Ganesha-process>/fd | wc -l
+        sh -c 'date && ls /proc/<PID-of-Ganesha-process>/fd | wc -l'
 
   #. Top 10 processes using the most amount of memory::
 
-        date && ps aux --sort -rss | head
+        sh -c 'date && ps aux --sort -rss | head'
 
   #. Free memory in the system::
 
-        date && free -m
+        sh -c 'date && free -m'
 
 - When the problem is observed with a CES node, collect this information on
-  that CES node:
+  the CES node:
 
   #. Collect netstat output::
 
-          netstat -an
+        sh -c 'date && netstat -an'
+
+  #. Collect NFS-Ganesha kernel thread stacks::
+
+        sh -c 'date && for i in /proc/<PID-of-Ganesha-process>/task/*; do echo "===$i===="; cat $i/stack; done'
 
   #. Enable Ganesha tracing (messages go to /var/log/ganesha.log)::
 
-          ganesha_mgr set_log COMPONENT_ALL FULL_DEBUG
+        ganesha_mgr set_log COMPONENT_ALL FULL_DEBUG
 
-  #. Collect tcpdump at client & server for 5 minutes after enabling Ganesha tracing
+  #. Enable GPFS tracing::
+
+        With at least vnode level 4 ??
+
+  #. Collect kthreads::
+
+        mmfsadm dump kthread
+
+  #. Collect tcpdump at client & server for 5 minutes after enabling
+     Ganesha and GPFS traces. Always collect tcpdump in pcap format by
+     providing -w option to tcpdump command.
 
   #. Collect coredump by sending SIGABORT signal to ganesha process,
-     make sure you setup to collect NFS-Ganesha coredumps first
-     though. See https://ganltc.github.io/setup-to-take-ganesha-coredumps.html
-     for details.
+     make sure you setup your CES nodes to collect NFS-Ganesha coredumps
+     first though. See `Setup to take ganesha coredumps
+     <{filename}../coredump/coredump.rst>`_ for more details.
