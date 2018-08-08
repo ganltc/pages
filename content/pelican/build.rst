@@ -46,6 +46,7 @@ Create gh-pages branch with ghp-import tool
 ===========================================
 ::
 
+    git commit -a       # commit your changes locally
     make publish        # creates "output" directory for publishing
     ghp-import output   # creates gh-pages git branch with "output"
 
