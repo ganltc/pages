@@ -65,9 +65,9 @@ issue or a hang condition.
 
         With at least vnode level 4 ??
 
-  #. Collect kthreads::
+  #. Collect kernel thread stacks::
 
-        mmfsadm dump kthread
+        mmdumpkthreads
 
   #. Collect tcpdump at client & server for 5 minutes after enabling
      Ganesha and GPFS traces. Always collect tcpdump in pcap format by
