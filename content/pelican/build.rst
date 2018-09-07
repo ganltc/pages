@@ -42,22 +42,22 @@ Test locally
     Open "output/index.html" with your favourite browser.
     Edit the .rst files until you think they look good in your browser!
 
+Push the source (rst files) repo upstream
+=========================================
+::
+
+    git commit -a       # commit your changes locally
+    git push origin master # update github pages repo
+
 Create gh-pages branch with ghp-import tool
 ===========================================
 ::
 
-    git commit -a       # commit your changes locally
     make publish        # creates "output" directory for publishing
     ghp-import output   # creates gh-pages git branch with "output"
 
-Push gh-pages upstream
-======================
+Push gh-pages upstream to ganltc.github.io repo
+===============================================
 ::
 
-    git push git@github.com:ganltc/ganltc.github.io gh-pages:master
-
-Finally Push the source (rst files) repo upstream
-=================================================
-::
-
-    git push origin master
+    git push -f https://github.com/ganltc/ganltc.github.io gh-pages:master
