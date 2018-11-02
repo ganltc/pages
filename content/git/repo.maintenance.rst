@@ -30,7 +30,7 @@ These are the steps we follow for updating ibm2.5 branch:
 
 #. Create a merge branch "ibm2.5"::
    
-    git checkout -b ibm2.5 gitlab/ibm2.5
+    git checkout -b ibm2.5 ganltc/ibm2.5
 
 #. Create a working branch from ibm2.5 from the merge commit's second
    parent::

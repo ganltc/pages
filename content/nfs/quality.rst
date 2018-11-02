@@ -49,3 +49,8 @@ Quality and data collection
    #. Suggests "sync" mount option here::
 
          https://www.ibm.com/support/knowledgecenter/en/STXKQY_5.0.0/com.ibm.spectrum.scale.v5r00.doc/bl1adv_ces_nfssupport.htm
+
+#. Code coverage tests::
+
+        We need add some code coverage tests to make sure error paths
+        are covered!

@@ -32,9 +32,13 @@ coredumps:
 
         Set MaxCrashReportsSize = 0 in the /etc/abrt/abrt.conf file.
 
-#. Start (or restart) the abort daemon::
+#. Start (or restart) the abrt daemon service::
 
         systemctl restart abrtd
+
+#. Start (or restart) the abort-ccpp service::
+
+        systemctl restart abrt-ccpp
 
 
 #. A core dump might not be generated for code areas where the Ganesha
@@ -57,8 +61,11 @@ coredumps:
         # sysctl fs.suid_dumpable
         fs.suid_dumpable = 2
 
-#. Verify that the system actually takes coredumps by sending abort
-   signal to Ganesha process::
+#. Verify that the system actually takes Ganesha coredumps when it
+   crashes! Here we send abort signal to Ganesha process to
+   intentionally crash it, please note that the Ganesha daemon will be
+   terminated after this and the generated coredump should be deleted as it is
+   useless::
 
         # kill -SIGABRT <Ganesh-daemon-PID>
 
