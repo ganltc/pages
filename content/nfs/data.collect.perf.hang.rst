@@ -32,7 +32,8 @@ issue or a hang condition.
 
   #. Collect Ganesha stats::
 
-        ganesha_stats
+        ganesha_stats iov3 # For NFSv3 stats
+        ganesha_stats iov4 # For NFSv4 stats
 
   #. Number of file descriptors opened by Ganesha server (**use the actual PID of Ganesha process**)::
 
