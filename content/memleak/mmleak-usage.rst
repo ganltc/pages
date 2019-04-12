@@ -1,5 +1,5 @@
 ===========================================================
-Tracing memory leaks with mmleak with nfs-ganesha daemon
+Tracing nfs-ganesha daemon memory leaks with mmleak tool
 ===========================================================
 
 :date: 2019-04-09
@@ -8,7 +8,7 @@ Tracing memory leaks with mmleak with nfs-ganesha daemon
 :category: memory
 :authors: Malahal Naineni
 
-Tracing memory leaks with mmleak with nfs-ganesha daemon
+Tracing nfs-ganesha daemon memory leaks with mmleak tool
 ===========================================================
 
 Valgrind and libasan are good tools to track memory leaks on test
@@ -30,18 +30,33 @@ use mmleak with NFS-Ganesha daemon.
    architecture!
 #. Copy mmleak.so, mmleak.py and mmleak-install scripts on the target
    system
-#. Run "mmleak-install" script. This will copy mmleak.so to /root and
-   also updates nfs-ganesha systemd service unit file to LD_PRELOAD the
-   shared library.
+#. Run "mmleak-install <dump-directory>" script. This will copy mmleak.so
+   to /root and updates nfs-ganesha systemd service unit file to LD_PRELOAD
+   the shared library.
+#. Restart nfs service to make use of the tool::
+
+    mmces service stop nfs && mmces service start nfs
+
 #. mmleak.so stores its dump files into the directory given to
    mmleak-install script. mmleak.out is an active log file used by
    mmleak.so.  Other dump files matching mmleak.<PID>.<NUM>.out are
    complete and they can be copied to other systems for analysis.
-#. Completed dump files should be shrinked using the following command
-   on each file (the original dump file can be deleted after this)::
+#. Completed dump files can be shrinked using the following command
+   on each file (*the original dump file can be deleted after this*)::
 
-     sort -s -k1,1 mmleak.<PID>.<NUM>.out | mmleak.py > mmleak.<PID>.<NUM>.out.shrinked
+    sort -s -k1,1 mmleak.<PID>.<NUM>.out | mmleak.py > mmleak.<PID>.<NUM>.out.shrinked
+
+   If you have a bunch of such files, you can run this loop::
+
+        for i in mmleak.*.*.out; do if [ ! -s $i.shrinked ]; then echo $i; sort -s -k1,1 $i |/root/mmleak.py > $i.shrinked; rm -i $file; fi; done
 
 #. See mmleak project for using the shrinked files and the process maps
    file to arrive at line numbers in the source code that allocated
    memory but didn't free.
+
+#. To back out this LD_PRELOAD setup on the system::
+
+        rm /etc/systemd/system/nfs-ganesha.service
+        systemctl daemon-reload
+        rm /root/mmleak.so # optional step!
+        mmces service stop nfs && mmces service start nfs
