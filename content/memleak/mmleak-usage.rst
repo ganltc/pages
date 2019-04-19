@@ -48,7 +48,7 @@ use mmleak with NFS-Ganesha daemon.
 
    If you have a bunch of dump files, you can run this loop::
 
-        for i in mmleak.*.*.out; do if [ ! -s $i.shrinked ]; then echo $i; sort -s -k1,1 $i |/root/mmleak.py > $i.shrinked && rm -i $file; fi; done
+        for i in mmleak.*.*.out; do if [ ! -s $i.shrinked ]; then echo $i; sort -s -k1,1 $i |/root/mmleak.py > $i.shrinked && rm $file; fi; done
 
 #. See mmleak project for using the shrinked files and the process maps
    file to arrive at line numbers in the source code that allocated
