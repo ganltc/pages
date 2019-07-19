@@ -42,22 +42,22 @@ These are the steps we follow for updating ibm2.7 branch.
    - If we are rebasing on top of the latest V2.7-stable, update the
      checked out working branch by rebasing our patches with the latest
      V2.7-stable. Note that the version patch always fails to merge.
-     Fix the version and *modify the version commit message* to reflect
+     Fix the version and **modify the version commit message** to reflect
      the new version!::
 
         git rebase origin/next
         git commit -a --amend # to fix version commit message
 
    - If we want to add some extra patches, just add them using "git
-     cherry-pick" and *create a new version patch and remove the old
-     version patch*::
+     cherry-pick" and **create a new version patch and remove the old
+     version patch**::
 
         git cherry-pick -x <commit1>
         git cherry-pick -x <commit2>
         git rebase -i <deep-enough-commit> to reorder and edit the old version
             commit to the top and then modify src/CMakeLists.txt and
             debian/changelog files appropriately with a new version.
-        git commit -a --amend to *modify the version commit message*
+        git commit -a --amend # to modify the version commit
 
 #. At this point, your working branch has all the patches you need in
    a linear history, no merge commits etc. It should have the version
