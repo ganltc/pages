@@ -39,18 +39,18 @@ These are the steps we follow for updating ibm2.7 branch.
 
 #. Perform one of the following steps
 
-    - If we are rebasing on top of the latest V2.7-stable, update the
-      checked out working branch by rebasing our patches with the latest
-      V2.7-stable. Note that the version patch always fails to merge.
-      Fix the version and *modify the version commit message* to reflect
-      the new version!::
+   - If we are rebasing on top of the latest V2.7-stable, update the
+     checked out working branch by rebasing our patches with the latest
+     V2.7-stable. Note that the version patch always fails to merge.
+     Fix the version and *modify the version commit message* to reflect
+     the new version!::
 
         git rebase origin/next
         git commit -a --amend # to fix version commit message
 
-    - If we want to add some extra patches, just add them using "git
-      cherry-pick" and *create a new version patch and remove the old
-      version patch*::
+   - If we want to add some extra patches, just add them using "git
+     cherry-pick" and *create a new version patch and remove the old
+     version patch*::
 
         git cherry-pick -x <commit1>
         git cherry-pick -x <commit2>
