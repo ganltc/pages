@@ -79,7 +79,7 @@ These are the steps we follow for updating ibm2.7 branch.
 #. Make sure that the deployment branch and the working branch have the
    same exact code (no diff output is expected!)::
 
-    git diff ibm2.5 working
+    git diff ibm2.7 working
 
 #. Checkout the deployment branch "ibm2.7"::
 
