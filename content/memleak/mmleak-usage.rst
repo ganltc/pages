@@ -38,17 +38,15 @@ use mmleak with NFS-Ganesha daemon.
 
 #. mmleak.so stores its dump files into the directory given to
    mmleak-install script. mmleak-<HOSTNAME>.<PID>.pid is an active log
-   file used by
-   mmleak.so.  Other dump files matching mmleak-<HOSTNAME>.<PID>.<NUM>.out are
-   complete and they can be copied to other systems for analysis.
-#. Completed dump files can be shrunken using the following command
-   on each file (*the original dump file can be deleted after this*)::
+   file used by mmleak.so.  Other dump files matching
+   mmleak-<HOSTNAME>.<PID>.<NUM>.out are complete and they can be
+   copied to other systems for analysis.
+#. The dump files generated will be big as it dumps all allocations and
+   frees. Use mmleak-shrink.py script to remove the matching allocations and
+   frees as below (**note that files with .pid extension are active dump
+   files in use, please don't modify or use them**)::
 
-    sort -s -k1,1 mmleak-<HOSTNAME>.<PID>.<NUM>.out | mmleak.py > mmleak-<HOSTNAME>.<PID>.<NUM>.out.shrinked
-
-   If you have a bunch of dump files, you can run this loop::
-
-    for i in mmleak*.out; do if [ ! -s $i.shrinked ]; then echo $i; sort -s -k1,1 $i | mmleak.py > $i.shrinked; fi; done
+    for i in mmleak*.out; do if [ ! -s $i.shrinked ]; then echo $i; mmleak-shrink.py < $i > $i.shrinked && rm $i; fi; done
 
 #. See mmleak project for using the shrunken files and the process maps
    file to arrive at line numbers in the source code that allocated
