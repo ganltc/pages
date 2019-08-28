@@ -78,4 +78,4 @@ issue or a hang condition.
   #. Collect coredump by sending SIGABORT signal to ganesha process,
      make sure you setup your CES nodes to collect NFS-Ganesha coredumps
      first though. See `Setup to take ganesha coredumps
-     <{filename}../coredump/coredump.rst>`_ for more details.
+     <{filename}../coredump/coredump-setup.rst>`_ for more details.
