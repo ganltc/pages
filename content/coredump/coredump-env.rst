@@ -48,14 +48,14 @@ one from scratch!
    working as the docker container is close to the system that took
    coredump!::
 
-        awk '{print $2}' > /tmp/rpms
+        awk '{print $2}' dso_list > /tmp/rpms
         # edit /tmp/rpms to remove rpms that don't exist in yum repos.
         yum install $(cat /tmp/rpms)
 
 7. Now run gdb and install any debuginfo rpms you need.
 
 And if your docker container is stopped for some reason, you can always
-restart it and then exec with (nothing is lost)::
+restart it and then execute bash as below (nothing is lost)::
 
         docker start rh74
         docker exec -it rh74 /bin/bash
