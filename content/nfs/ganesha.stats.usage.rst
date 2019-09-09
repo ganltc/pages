@@ -43,11 +43,12 @@ as shown below::
         /usr/bin/ganesha_stats [list_clients | deleg <ip address> | inode |
                                 iov3 [export id] | iov4 [export id] | export |
                                 total [export id] | fast | pnfs [export id] |
-                                fsal <fsal name> | v3_full | v4_full | rpc] 
+                                fsal <fsal name> | v3_full | v4_full | rpc | auth] 
         To reset stat counters use 
         /usr/bin/ganesha_stats reset 
         To enable/disable stat counters use 
-        /usr/bin/ganesha_stats [enable | disable] [all | nfs | fsal | v3_full | v4_full | rpc] 
+        /usr/bin/ganesha_stats [enable | disable] [all | nfs | fsal | v3_full | v4_full | rpc |
+                                auth]
         To get the current memory pool allocation
         /usr/bin/ganesha_stats pool
 
@@ -91,6 +92,9 @@ Options to extract stats
     default.
 - rpc – this option provides information about RPC queue related stats. RPC
     Queue specific stats counting is disabled by default.
+- auth – this option provides information about authentication related stats
+    for winbind and group cache. "auth" stats counting is disabled by default.
+    This is available starting from Spectrum Scale 5.0.4 release.
 
 Options to manage stats counting
 --------------------------------
@@ -307,6 +311,27 @@ Few Examples:
         RPCs sent -              132
         Avg wait time -     0.000405
         Max wait time -     0.000944
+
+**Extracting Authentication related stats (assuming it is already enabled):**
+::
+
+    # ganesha_stats auth
+    Timestamp: Thu May 16 13:41:58 2019870093583 nsecs
+    Authentication related stats
+
+    Group Cache
+    Total ops: 4
+    Ave Latency: 0.8792455
+    Max Latency: 1.463887
+    Min Latency: 0.093453
+
+    Winbind
+    Total ops: 44
+    Ave Latency: 10.7604362955
+    Max Latency: 206.015097
+    Min Latency: 0.142931
+
+
 
 **Resetting the stats:**
 ::
