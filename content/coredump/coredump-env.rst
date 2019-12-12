@@ -24,7 +24,8 @@ steps I used. Bonus, if you mess up your docker container, spin a new
 one from scratch!
 
 1. Make sure your base system can run docker. Some older versions of
-   RHEL7 have issues. I would start with RHEL7.5 or the latest.
+   RHEL7 have issues. I would start with RHEL7.5 or the latest and
+   install docker.
 
 2. SELinux didn't work with docker. There should be a way to get around
    this, but I didn't investigate it further. I just disabled SELinux in
@@ -38,6 +39,9 @@ one from scratch!
    might be different)::
 
         docker run -dt --name rh74 --hostname rh74 -v /data:/data:rw registry.access.redhat.com/rhel7.4
+        Or for CentOS
+
+        docker run -dt --name cos77 --hostname cos77 -v /data:/data:rw docker.io/library/centos:centos7.7.1908
 
 5. Now execute bash in the running container as below::
 
@@ -49,7 +53,13 @@ one from scratch!
    coredump!::
 
         awk '{print $2}' dso_list > /tmp/rpms
+
         # edit /tmp/rpms to remove rpms that don't exist in yum repos.
+        Also ganesha doesn't depend on glibc-common, so it won't be
+        there in the dso_list file but will present issues with broken
+        dependency. Adding the glibc-common with exact version as glibc
+        needed to the /tmp/rpms will work!
+
         yum install $(cat /tmp/rpms)
 
 7. Now run gdb and install any debuginfo rpms you need.
