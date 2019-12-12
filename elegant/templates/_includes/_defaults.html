@@ -12,6 +12,13 @@
 {% set SOCIAL_PROFILE_LABEL = SOCIAL_PROFILE_LABEL %}
 {% endif %}
 
+{# Label for My Projects #}
+{% if not PROJECTS_TITLE %}
+{% set PROJECTS_TITLE = 'My Projects' %}
+{% else %}
+{% set PROJECTS_TITLE = PROJECTS_TITLE %}
+{% endif %}
+
 {# Label for the Email subscription form #}
 {% if not EMAIL_SUBSCRIPTION_LABEL %}
 {% set EMAIL_SUBSCRIPTION_LABEL = 'Email Newsletter' %}
@@ -54,18 +61,35 @@
 {% set COMMENTS_INTRO = COMMENTS_INTRO %}
 {% endif %}
 
+{% if not DISQUS_FILTER %}
+{% set DISQUS_FILTER = False %}
+{% else %}
+{% set DISQUS_FILTER = DISQUS_FILTER %}
+{% endif %}
+
+{% if not UTTERANCES_FILTER %}
+{% set UTTERANCES_FILTER = False %}
+{% else %}
+{% set UTTERANCES_FILTER = UTTERANCES_FILTER %}
+{% endif %}
+
+{% if not UTTERANCES_THEME %}
+{% set UTTERANCES_THEME = 'github-light' %}
+{% else %}
+{% set UTTERANCES_THEME = UTTERANCES_THEME %}
+{% endif %}
+
+{% if not UTTERANCES_LABEL %}
+{% set UTTERANCES_LABEL = '' %}
+{% else %}
+{% set UTTERANCES_LABEL = UTTERANCES_LABEL %}
+{% endif %}
+
 {# Author's twitter handle. Used in Twitter card meta data #}
 {% if not TWITTER_USERNAME %}
 {% set TWITTER_USERNAME = '' %}
 {% else %}
 {% set TWITTER_USERNAME = TWITTER_USERNAME %}
-{% endif %}
-
-{# Author's Google Plus Profile URL. Used for Google Authorship #}
-{% if not GOOGLE_PLUS_PROFILE_URL %}
-{% set GOOGLE_PLUS_PROFILE_URL = '' %}
-{% else %}
-{% set GOOGLE_PLUS_PROFILE_URL = GOOGLE_PLUS_PROFILE_URL %}
 {% endif %}
 
 {# Thumbnail image to show when homepage is shared on social media. It also
@@ -98,6 +122,23 @@ search results and social media #}
 {% set MAILCHIMP_FORM_ACTION = MAILCHIMP_FORM_ACTION %}
 {% endif %}
 
+{% if not MAILCHIMP_FILTER %}
+{% set MAILCHIMP_FILTER = False %}
+{% else %}
+{% set MAILCHIMP_FILTER = MAILCHIMP_FILTER %}
+{% endif %}
+
+{% if not FREELISTS_NAME %} {% set FREELISTS_NAME = '' %}
+{% else %}
+{% set FREELISTS_NAME = FREELISTS_NAME %}
+{% endif %}
+
+{% if not FREELISTS_FILTER %}
+{% set FREELISTS_FILTER = False %}
+{% else %}
+{% set FREELISTS_FILTER = FREELISTS_FILTER %}
+{% endif %}
+
 {# It is displayed along with the SITENAME in the footer of every page #}
 {% if not SITESUBTITLE %}
 {% set SITESUBTITLE = '' %}
@@ -114,20 +155,15 @@ accordingly #}
 {% set USE_SHORTCUT_ICONS = USE_SHORTCUT_ICONS %}
 {% endif %}
 
-{# It is a dictionary with two keys: title, details. Value of each key is a
-string. It is used to display About me section on the home page.
-LANDING_PAGE_ABOUT = {'title': 'Talha Mansoor',
-                      'details': '<p>I am a software developer. This blog is'
-                                 'my personal space in the cyber world!</p>'
-                     }
+{# It is a string
 #}
-{% if not LANDING_PAGE_ABOUT %}
-{% set LANDING_PAGE_ABOUT = '' %}
+{% if not LANDING_PAGE_TITLE %}
+{% set LANDING_PAGE_TITLE = '' %}
 {% else %}
-{% set LANDING_PAGE_ABOUT = LANDING_PAGE_ABOUT %}
+{% set LANDING_PAGE_TITLE = LANDING_PAGE_TITLE %}
 {% endif %}
 
-{# It is an array of dictionaries. Each distionary has three keys: name, url,
+{# It is an array of dictionaries. Each dictionary has three keys: name, url,
 description.
 PROJECTS = [{
     'name': 'Logpad + Duration',
@@ -145,3 +181,46 @@ PROJECTS = [{
 {% set PROJECTS = PROJECTS %}
 {% endif %}
 
+{# Minimum reading time for not showing how long does it takes to read it (INTEGER) #}
+{% if not READING_TIME_LOWER_LIMIT %}
+{% set READING_TIME_LOWER_LIMIT = 4 %}
+{% else %}
+{% set READING_TIME_LOWER_LIMIT = READING_TIME_LOWER_LIMIT | int %}
+{% endif %}
+
+{# Lightbox enabled by default gallery  #}
+{% if not PHOTOS_LIGHTBOX %}
+{% set PHOTOS_LIGHTBOX = 'True' %}
+{% else %}
+{% set PHOTOS_LIGHTBOX = PHOTOS_LIGHTBOX %}
+{% endif %}
+
+{%if not TAGS_URL %}
+{% set TAGS_URL = 'tags.html' %}
+{% else %}
+{% set TAGS_URL = TAGS_URL %}
+{% endif %}
+
+{%if not CATEGORIES_URL %}
+{% set CATEGORIES_URL = 'categories.html' %}
+{% else %}
+{% set CATEGORIES_URL = CATEGORIES_URL %}
+{% endif %}
+
+{%if not ARCHIVES_URL %}
+{% set ARCHIVES_URL = 'archives.html' %}
+{% else %}
+{% set ARCHIVES_URL = ARCHIVES_URL %}
+{% endif %}
+
+{%if not SEARCH_URL %}
+{% set SEARCH_URL = 'search.html' %}
+{% else %}
+{% set SEARCH_URL = SEARCH_URL %}
+{% endif %}
+
+{% if not APPLAUSE_BUTTON %}
+{% set APPLAUSE_BUTTON = False %}
+{% else %}
+{% set APPLAUSE_BUTTON = APPLAUSE_BUTTON %}
+{% endif %}
