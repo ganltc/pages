@@ -50,7 +50,7 @@ As an example, the following steps can be used to change
 chunk objects used in nfs-ganesha daemon. The default is 100,000 and the
 following will change it to one million (1,000,000)
 
-#. Find the section in the file this parameter belongs to.
+#. Find the block in the file this parameter belongs to.
    **chunks_hwmark** should be in **CacheInode** block.
 
 #. Copy /var/mmfs/ces/nfs-config/gpfs.ganesha.main.conf file into /tmp
