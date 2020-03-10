@@ -55,7 +55,7 @@ following will change it to one million (1,000,000)
 
 #. Copy /var/mmfs/ces/nfs-config/gpfs.ganesha.main.conf file into /tmp
    and modify the /tmp/gpfs.ganesha.main.conf file. Add
-   "Chunks_HWMark = 1000000;" to **CacheInode** block::
+   "chunks_hwmark = 1000000;" to **CacheInode** block::
 
         CacheInode
         {
