@@ -3,7 +3,7 @@ NFS Ganesha configuration on Spectrum Scale
 ===========================================
 
 :date: 2018-02-14
-:modified: 2018-02-14
+:modified: 2020-03-10
 :tags: nfs config
 :category: nfs
 :authors: Malahal Naineni
@@ -27,8 +27,8 @@ supported by mmnfs.  You have been warned that this is not an approved
 procedure at the time of this writing. Make sure that the parameter you
 are going to change is supported by the Ganesha daemon you are using!
 
-Changing /var/mmfs/ces/nfs-config/gpfs.ganesha.export.conf
------------------------------------------------------------
+1. Changing /var/mmfs/ces/nfs-config/gpfs.ganesha.export.conf
+--------------------------------------------------------------
 
 Luckily, you get a semi-automated way to modify the export configuration file!
 Copy your existing export configuration file, preferably into /tmp, and
@@ -38,49 +38,44 @@ and restart NFS services automatically, execute the following command::
       mmnfs export load /tmp/gpfs.ganesha.export.conf
 
 
-Changing /var/mmfs/ces/nfs-config/gpfs.ganesha.main.conf file
---------------------------------------------------------------
+2. Changing /var/mmfs/ces/nfs-config/gpfs.ganesha.main.conf file
+------------------------------------------------------------------
 
 There is no "mmnfs config load <load-file>", likely due to "mmnfs
 config" dealing with main.conf and log.conf, so we use "mmccr fput"
 command to change the main configuration file.
 
 As an example, the following steps can be used to change
-**Dispatch_Max_Reqs** parameter which limits the number of total
-outstanding NFS requests at Ganesha, anymore will be throttled!
+**chunks_hwmark** parameter which tries to limit the total number of
+chunk objects used in nfs-ganesha daemon. The default is 100,000 and the
+following will change it to one million (1,000,000)
 
-#. Find the section and the file this parameter belongs to.
-   **Dispatch_Max_Reqs** should be in **NFS_Core_Param** block which is
-   in /var/mmfs/ces/nfs-config/gpfs.ganesha.main.conf file.
+#. Find the section in the file this parameter belongs to.
+   **chunks_hwmark** should be in **CacheInode** block.
 
 #. Copy /var/mmfs/ces/nfs-config/gpfs.ganesha.main.conf file into /tmp
    and modify the /tmp/gpfs.ganesha.main.conf file. Add
-   "Dispatch_Max_Reqs = 20000;" to **NFS_Core_Param** block::
+   "Chunks_HWMark = 1000000;" to **CacheInode** block::
 
-        NFS_Core_Param
+        CacheInode
         {
-            Nb_Worker = 256;
-            Clustered = TRUE;
-            NFS_Protocols = 3,4;
-            NFS_Port = 2049;
-            MNT_Port = 0;
-            NLM_Port = 0;
-            RQUOTA_Port = 0
-            RPC_Max_Connections = 10000;
-            heartbeat_freq = 0;
-            short_file_handle = FALSE;
-            Dispatch_Max_Reqs = 20000;
+                fd_hwmark_percent=60;
+                fd_lwmark_percent=20;
+                fd_limit_percent=90;
+                lru_run_interval=30;
+                entries_hwmark=1500000;
+                chunks_hwmark=1000000;
         }
 
-
-#. Push the changed file to shared cluster configuration::
+#. Push the changed file to CCR::
 
        mmccr fput gpfs.ganesha.main.conf /tmp/gpfs.ganesha.main.conf
 
    This puts the last argument which should be a real file in your file
    system into CCR as gpfs.ganesha.main.conf file.
    
-#. Restart NFS Ganesha service on all protocol nodes (this might not be
-   needed)::
+#. Above step should restart NFS Ganesha service on all protocol nodes.
+   If this didn't happen for some reason, you can manually restart NFS
+   service on all protocol nodes as below)::
 
        mmces service stop nfs -a && mmces service start nfs -a
