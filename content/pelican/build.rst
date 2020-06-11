@@ -21,8 +21,8 @@ Install Pelican and ghp-import with
 ===================================
 ::
 
-    pip install pelican
-    pip install ghp-import
+    pip install --user pelican
+    pip install --user ghp-import
 
 Clone the source of this blog pages
 ===================================
@@ -60,4 +60,4 @@ Push gh-pages upstream to ganltc.github.io repo
 ===============================================
 ::
 
-    git push -f https://github.com/ganltc/ganltc.github.io gh-pages:master
+    git push https://github.com/ganltc/ganltc.github.io gh-pages:master
