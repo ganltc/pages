@@ -41,6 +41,10 @@ one from scratch!
 
         docker run -dt --privileged --name cos77 --hostname cos77 -v /data:/data:rw docker.io/library/centos:centos7.7.1908
 
+        Or for Ubuntu
+
+        docker run -dt --privileged --name ub20 --hostname ub20 -v /data:/data:rw ubuntu:20.04
+
 4. Now execute bash in the running container as below (previous step
    would have put you in the container too. You need to run this only if
    you happen to exit the shell from the previous step)::
